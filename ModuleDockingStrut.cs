@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace DockingStrut {
     public class ModuleDockingStrut : PartModule {
-        float StrutX, StrutY;
+        float StrutX, StrutY, StrutZ;
 
         [KSPField]
         int ticksToCheckForLinkAtStart = 100;
@@ -33,7 +33,7 @@ namespace DockingStrut {
         [KSPField]
         public float MaxDistance = 10;
 
-        [KSPField(isPersistant = true, guiActive = true)]
+        [KSPField(isPersistant = true, guiActive = false)]
         public string TargetIDs = Guid.Empty.ToString(), IDs = Guid.Empty.ToString();
 
         public Guid TargetID {
@@ -224,6 +224,9 @@ namespace DockingStrut {
                         joint.angularXMotion = ConfigurableJointMotion.Locked;
                         joint.angularYMotion = ConfigurableJointMotion.Locked;
                         joint.angularZMotion = ConfigurableJointMotion.Locked;
+                        joint.projectionAngle = 0f;
+                        joint.projectionDistance = 0f;
+                        joint.anchor = TargetDS.strutTarget;
                     } else {
                         Destroy(joint);
                         joint = null;
@@ -254,7 +257,7 @@ namespace DockingStrut {
             if (!DSUtil.checkPossibleTarget(this, PosTarget)) {
                 mode = DSMode.UNLINKED;
                 Targeted = false;
-                return;
+                return; 
             }
 
             foreach (BaseEvent e in Events)
@@ -268,10 +271,14 @@ namespace DockingStrut {
             SetStrutEnd(TargetDS.strutTarget);
         }
 
-        void SetStrutEnd(Vector3 position) {
-            mStrut.LookAt(position);
-            mStrut.localScale = new Vector3(StrutX, StrutY, 1);    
-            mStrut.localScale = new Vector3(StrutX, StrutY, Vector3.Distance(Vector3.zero, mStrut.InverseTransformPoint(position)));
+        void SetStrutEnd(Vector3 target) {
+            mStrut.LookAt(target);            
+            //mStrut.Rotate(new Vector3(0, 1, 0), 90f);
+            //mStrut.localScale = new Vector3(StrutX, StrutY, 1);    
+            //mStrut.localScale = new Vector3(StrutX, StrutY, Vector3.Distance(Vector3.zero, mStrut.InverseTransformPoint(position)));
+            mStrut.localScale = new Vector3(StrutX, StrutY, 1);
+            var distance = (Vector3.Distance(Vector3.zero, mStrut.InverseTransformPoint(target)));
+            mStrut.localScale = new Vector3(StrutX, StrutY, distance * StrutZ);
         }
 
         bool started = false;
@@ -280,6 +287,7 @@ namespace DockingStrut {
             
             StrutX = mStrut.localScale.x;
             StrutY = mStrut.localScale.y;
+            StrutZ = mStrut.localScale.z;
             mStrut.localScale = Vector3.zero;
 
             if (state == StartState.Editor) return;
