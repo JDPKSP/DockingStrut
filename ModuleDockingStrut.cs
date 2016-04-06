@@ -216,10 +216,10 @@ namespace DockingStrut {
                     }
                 }
 
-                if (jointCreated != Targeted && !part.rb.isKinematic && TargetDS != null && !TargetDS.part.rb.isKinematic) {
+                if (jointCreated != Targeted && !part.Rigidbody.isKinematic && TargetDS != null && !TargetDS.part.Rigidbody.isKinematic) {
                     if (Targeted) {
-                        joint = part.rb.gameObject.AddComponent<ConfigurableJoint>();
-                        joint.connectedBody = TargetDS.part.rb;
+                        joint = part.Rigidbody.gameObject.AddComponent<ConfigurableJoint>();
+                        joint.connectedBody = TargetDS.part.Rigidbody;
                         joint.breakForce = joint.breakTorque = float.PositiveInfinity;
                         joint.xMotion = ConfigurableJointMotion.Locked;
                         joint.yMotion = ConfigurableJointMotion.Locked;
@@ -276,9 +276,6 @@ namespace DockingStrut {
 
         void SetStrutEnd(Vector3 target) {
             mStrut.LookAt(target);            
-            //mStrut.Rotate(new Vector3(0, 1, 0), 90f);
-            //mStrut.localScale = new Vector3(StrutX, StrutY, 1);    
-            //mStrut.localScale = new Vector3(StrutX, StrutY, Vector3.Distance(Vector3.zero, mStrut.InverseTransformPoint(position)));
             mStrut.localScale = new Vector3(StrutX, StrutY, 1);
             var distance = (Vector3.Distance(Vector3.zero, mStrut.InverseTransformPoint(target)));
             mStrut.localScale = new Vector3(StrutX, StrutY, distance * StrutZ);
