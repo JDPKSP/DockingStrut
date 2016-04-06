@@ -16,11 +16,14 @@
    - Reworked joint linkage to get rid of phantom forces.
    - Added new ID system.
    - Reworked the way the visual strut is rescaled.
+
+   1.0.2.0
+   - Updated for KSP 1.0.5 (JPLRepo)
+
+   1.0.3.0
+   - Updated for KSP 1.1 (JPLRepo)
 */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace DockingStrut {
@@ -213,10 +216,10 @@ namespace DockingStrut {
                     }
                 }
 
-                if (jointCreated != Targeted && !part.rigidbody.isKinematic && TargetDS != null && !TargetDS.part.rigidbody.isKinematic) {
+                if (jointCreated != Targeted && !part.rb.isKinematic && TargetDS != null && !TargetDS.part.rb.isKinematic) {
                     if (Targeted) {
-                        joint = part.rigidbody.gameObject.AddComponent<ConfigurableJoint>();
-                        joint.connectedBody = TargetDS.part.rigidbody;
+                        joint = part.rb.gameObject.AddComponent<ConfigurableJoint>();
+                        joint.connectedBody = TargetDS.part.rb;
                         joint.breakForce = joint.breakTorque = float.PositiveInfinity;
                         joint.xMotion = ConfigurableJointMotion.Locked;
                         joint.yMotion = ConfigurableJointMotion.Locked;
